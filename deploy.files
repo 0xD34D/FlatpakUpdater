@@ -1,0 +1,6 @@
+dist
+dist/index.js
+package.json
+plugin.json
+README.md
+LICENSE

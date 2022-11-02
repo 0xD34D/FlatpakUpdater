@@ -5,7 +5,8 @@
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
     "watch": "rollup -c -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "shx rm -rf dist && rollup -c && sh -x deploy.sh"
   },
   "repository": {
     "type": "git",
