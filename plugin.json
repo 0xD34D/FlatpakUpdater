@@ -1,10 +1,16 @@
 {
-  "name": "Example Plugin",
-  "author": "John Doe",
-  "flags": ["debug", "_root"],
+  "name": "Flatpak Updater",
+  "author": "0xD34D",
+  "flags": [
+    "debug",
+    "_root"
+  ],
   "publish": {
-    "tags": ["template", "root"],
-    "description": "Decky example plugin.",
+    "tags": [
+      "template",
+      "root"
+    ],
+    "description": "Update flatpaks from the steam client.",
     "image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"
   }
 }

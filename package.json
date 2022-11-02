@@ -1,7 +1,7 @@
 {
-  "name": "decky-plugin-template",
+  "name": "steamdeck-flatpak-updater-plugin",
   "version": "0.0.1",
-  "description": "A template to quickly create decky plugins from scratch, based on TypeScript and webpack",
+  "description": "A decky plugin to update flatpaks from the steam client",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
     "watch": "rollup -c -w",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SteamDeckHomebrew/decky-plugin-template.git"
+    "url": "git+https://github.com/0xD34D/steamdeck-flatpak-updater-plugin.git"
   },
   "keywords": [
     "decky",
@@ -18,12 +18,12 @@
     "steam-deck",
     "deck"
   ],
-  "author": "Jonas Dellinger <jonas@dellinger.dev>",
-  "license": "BSD-3-Clause",
+  "author": "Clark Scheff <clark@scheffsblend.com>",
+  "license": "GPLv2",
   "bugs": {
-    "url": "https://github.com/SteamDeckHomebrew/decky-plugin-template/issues"
+    "url": "https://github.com/0xD34D/steamdeck-flatpak-updater-plugin/issues"
   },
-  "homepage": "https://github.com/SteamDeckHomebrew/decky-plugin-template#readme",
+  "homepage": "hhttps://github.com/0xD34D/steamdeck-flatpak-updater-plugin#readme",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.1.0",
     "@rollup/plugin-json": "^4.1.0",
