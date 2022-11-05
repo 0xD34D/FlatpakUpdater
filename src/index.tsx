@@ -10,32 +10,31 @@ import {
   ServerAPI,
   showContextMenu,
   staticClasses,
+  TextField,
 } from "decky-frontend-lib";
-import { VFC } from "react";
+import { PyInterop } from "./PyInterop";
+import { useEffect, useState, VFC } from "react";
 import { FaShip } from "react-icons/fa";
-
 import logo from "../assets/logo.png";
 
-// interface AddMethodArgs {
-//   left: number;
-//   right: number;
-// }
+const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
+  const [adder, setResult] = useState<number>();
+  const [flatPaks, setInstalledFlatpaks] = useState<string[]>();
 
-const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
-  // const [result, setResult] = useState<number | undefined>();
-
-  // const onClick = async () => {
-  //   const result = await serverAPI.callPluginMethod<AddMethodArgs, number>(
-  //     "add",
-  //     {
-  //       left: 2,
-  //       right: 2,
-  //     }
-  //   );
-  //   if (result.success) {
-  //     setResult(result.result);
-  //   }
-  // };
+  useEffect(() => {
+    PyInterop.add(2, 40)
+      .then(data => {
+        if (data.success) {
+          setResult(data.result);
+        }
+      });
+    PyInterop.getInstalledFlatpaks()
+      .then(data => {
+        if (data.success) {
+          setInstalledFlatpaks(data.result);
+        }
+      });
+  }, [])
 
   return (
     <PanelSection title="Panel Section">
@@ -44,16 +43,16 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
           layout="below"
           onClick={(e) =>
             showContextMenu(
-              <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
-                <MenuItem onSelected={() => {}}>Item #1</MenuItem>
-                <MenuItem onSelected={() => {}}>Item #2</MenuItem>
-                <MenuItem onSelected={() => {}}>Item #3</MenuItem>
+              <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => { }}>
+                <MenuItem onSelected={() => { }}>Item #1</MenuItem>
+                <MenuItem onSelected={() => { }}>Item #2</MenuItem>
+                <MenuItem onSelected={() => { }}>Item #3</MenuItem>
               </Menu>,
               e.currentTarget ?? window
             )
           }
         >
-          Server says yolo
+          Server says *{adder}*
         </ButtonItem>
       </PanelSectionRow>
 
@@ -61,6 +60,15 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <img src={logo} />
         </div>
+      </PanelSectionRow>
+
+      <PanelSectionRow>
+        <TextField value="Testing" />
+        {
+          flatPaks?.flatMap((itm: string) => (
+            <div>{itm}</div>
+          ))
+        }
       </PanelSectionRow>
 
       <PanelSectionRow>
@@ -90,12 +98,13 @@ const DeckyPluginRouterTest: VFC = () => {
 };
 
 export default definePlugin((serverApi: ServerAPI) => {
+  PyInterop.setServer(serverApi);
   serverApi.routerHook.addRoute("/decky-plugin-test", DeckyPluginRouterTest, {
     exact: true,
   });
 
   return {
-    title: <div className={staticClasses.Title}>Example Plugin</div>,
+    title: <div className={staticClasses.Title}>Flatpak Updater Plugin</div>,
     content: <Content serverAPI={serverApi} />,
     icon: <FaShip />,
     onDismount() {

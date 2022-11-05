@@ -1,9 +1,9 @@
 {
-  "name": "Flatpak Updater",
+  "name": "steamdeck-flatpak-updater-plugin",
   "author": "0xD34D",
   "flags": [
     "debug",
-    "_root"
+    "root"
   ],
   "publish": {
     "tags": [

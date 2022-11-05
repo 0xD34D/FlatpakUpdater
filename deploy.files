@@ -1,5 +1,7 @@
-dist
-dist/index.js
+assets/
+dist/
+dist/assets/
+main.py
 package.json
 plugin.json
 README.md
