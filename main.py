@@ -18,8 +18,8 @@ logger.setLevel(logging.INFO)
 class FlatpakInfo:
     name: str
     appID: str
-    hash:  str
-    latestHash: str
+    localHash:  str
+    remoteHash: str
     remote: str
     ref: str
     updateAvailable: bool
@@ -29,8 +29,8 @@ class FlatpakInfo:
             {
                 "name": self.name,
                 "appID": self.appID,
-                "hash": self.hash,
-                "latestHash": self.latestHash,
+                "localHash": self.localHash,
+                "remoteHash": self.remoteHash,
                 "remote": self.remote,
                 "ref": self.ref,
                 "updateAvailable": self.updateAvailable
@@ -46,8 +46,15 @@ class Plugin:
         res = {}
 
         for k, v in self.flatpaks.items():
-            res[k] = {"name": v.name, "appID": v.appID, "hash": v.hash,
-                      "latestHash": v.latestHash, "updateAvailable": v.updateAvailable}
+            res[k] = {
+                "name": v.name,
+                "appID": v.appID,
+                "localHash": v.localHash,
+                "remoteHash": v.remoteHash,
+                "remote": v.remote,
+                "ref": v.ref,
+                "updateAvailable": v.updateAvailable
+            }
 
         return res
 
@@ -113,26 +120,26 @@ class Plugin:
     @staticmethod
     def _getFlatpakInfo(appID: str, name: str) -> Optional[FlatpakInfo]:
         info: FlatpakInfo = FlatpakInfo(
-            name=name, appID=appID, hash=None, latestHash=None, remote=None, ref=None, updateAvailable=False)
+            name=name, appID=appID, localHash=None, remoteHash=None, remote=None, ref=None, updateAvailable=False)
         try:
             data = subprocess.check_output(
                 ['flatpak', 'info', '-o', '-c', '-r', appID], encoding='utf-8').strip().split()
             info.ref = data[0]
             info.remote = data[1]
-            info.hash = data[2]
+            info.localHash = data[2]
         except:
             logger.error(
                 f'failed to get commit info for {appID}', exc_info=True)
             return None
 
         try:
-            info.latestHash = subprocess.check_output(
+            info.remoteHash = subprocess.check_output(
                 ['flatpak', 'remote-info', info.remote, info.ref, '-c'], encoding='utf-8', timeout=2.5).strip()
         except subprocess.CalledProcessError:
             logger.error(
                 f'failed to get remote commit info for {appID}', exc_info=True)
             return None
 
-        info.updateAvailable = info.hash != info.latestHash
+        info.updateAvailable = info.localHash != info.remoteHash
 
         return info
