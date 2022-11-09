@@ -1,14 +1,15 @@
 {
-  "name": "steamdeck-flatpak-updater-plugin",
+  "name": "FlatpakUpdater",
   "author": "0xD34D",
   "flags": [
-    "debug",
     "root"
   ],
   "publish": {
     "tags": [
-      "template",
-      "root"
+      "flatpak",
+      "root",
+      "update",
+      "updater"
     ],
     "description": "Update flatpaks from the steam client.",
     "image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"

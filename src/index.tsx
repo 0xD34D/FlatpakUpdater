@@ -1,90 +1,73 @@
 import {
-  ButtonItem,
   definePlugin,
   DialogButton,
-  Menu,
-  MenuItem,
+  Field,
   PanelSection,
   PanelSectionRow,
   Router,
   ServerAPI,
-  showContextMenu,
+  SteamSpinner,
   staticClasses,
-  TextField,
 } from "decky-frontend-lib";
 import { PyInterop } from "./PyInterop";
 import { useEffect, useState, VFC } from "react";
-import { FaShip } from "react-icons/fa";
-import logo from "../assets/logo.png";
+import { FaCloudDownloadAlt } from "react-icons/fa";
+import { FlatpakInfo } from "./FlatpakInfo";
+
+type FlatpaksDictionary = {
+  [key: string]: FlatpakInfo
+}
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
-  const [adder, setResult] = useState<number>();
-  const [flatPaks, setInstalledFlatpaks] = useState<string[]>();
+  const [flatPaks, setUpdatableFlatpaks] = useState<FlatpaksDictionary>({});
 
   useEffect(() => {
-    PyInterop.add(2, 40)
+    PyInterop.getUpdatableFlatpaks()
       .then(data => {
         if (data.success) {
-          setResult(data.result);
-        }
-      });
-    PyInterop.getInstalledFlatpaks()
-      .then(data => {
-        if (data.success) {
-          setInstalledFlatpaks(data.result);
+          setUpdatableFlatpaks(data.result);
         }
       });
   }, [])
 
   return (
-    <PanelSection title="Panel Section">
-      <PanelSectionRow>
-        <ButtonItem
-          layout="below"
-          onClick={(e) =>
-            showContextMenu(
-              <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => { }}>
-                <MenuItem onSelected={() => { }}>Item #1</MenuItem>
-                <MenuItem onSelected={() => { }}>Item #2</MenuItem>
-                <MenuItem onSelected={() => { }}>Item #3</MenuItem>
-              </Menu>,
-              e.currentTarget ?? window
-            )
-          }
-        >
-          Server says *{adder}*
-        </ButtonItem>
-      </PanelSectionRow>
-
+    <PanelSection title="Flatpaks">
       <PanelSectionRow>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <img src={logo} />
+          {Object.values(flatPaks).length > 0 &&
+            <Field label={Object.values(flatPaks).length}> updates available</Field>
+          }
+          {Object.values(flatPaks).length == 0 &&
+            <div>
+              <i>Checking for updates</i>
+              <div>
+                <SteamSpinner />
+              </div>
+            </div>
+          }
         </div>
       </PanelSectionRow>
 
       <PanelSectionRow>
-        <TextField value="Testing" />
         {
-          flatPaks?.flatMap((itm: string) => (
-            <div>{itm}</div>
+          Object.values(flatPaks).map((info) => (
+            renderInfoIfUpdateAvailable(info)
           ))
         }
-      </PanelSectionRow>
-
-      <PanelSectionRow>
-        <ButtonItem
-          layout="below"
-          onClick={() => {
-            Router.CloseSideMenus();
-            Router.Navigate("/decky-plugin-test");
-          }}
-        >
-          Router
-        </ButtonItem>
       </PanelSectionRow>
     </PanelSection>
   );
 };
+
+function renderInfoIfUpdateAvailable(info: FlatpakInfo) {
+  if (info.updateAvailable) {
+    return (
+      <Field label={info.name} />
+    )
+  }
+
+  return (null)
+}
 
 const DeckyPluginRouterTest: VFC = () => {
   return (
@@ -104,9 +87,9 @@ export default definePlugin((serverApi: ServerAPI) => {
   });
 
   return {
-    title: <div className={staticClasses.Title}>Flatpak Updater Plugin</div>,
+    title: <div className={staticClasses.Title}>Flatpak Updater</div>,
     content: <Content serverAPI={serverApi} />,
-    icon: <FaShip />,
+    icon: <FaCloudDownloadAlt />,
     onDismount() {
       serverApi.routerHook.removeRoute("/decky-plugin-test");
     },

@@ -1,6 +1,4 @@
-assets/
 dist/
-dist/assets/
 main.py
 package.json
 plugin.json
