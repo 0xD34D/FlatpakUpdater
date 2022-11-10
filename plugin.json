@@ -7,11 +7,12 @@
   "publish": {
     "tags": [
       "flatpak",
+      "flatpaks",
       "root",
       "update",
       "updater"
     ],
     "description": "Update flatpaks from the steam client.",
-    "image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"
+    "image": "https://steamuserimages-a.akamaihd.net/ugc/1885347294331325509/8098EECB8DA11691B9151B1B7A815821F80D53B2/?imw=1200&imh=600"
   }
 }
