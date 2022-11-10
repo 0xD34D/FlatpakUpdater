@@ -165,18 +165,18 @@ const ApplyUpdates: VFC = () => {
       {info &&
         <PanelSectionRow>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <i>Updating {info.name} ({info.appID})</i>
+            Updating {info.name} <i>({info.appID})</i>
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ProgressBar nProgress={(count / totalToUpdate) * 100} />
           </div>
           <div>
-            <div style={{ display: "block", justifyContent: "stretch" }}>
+            <div style={{ display: "block", justifyContent: "normal" }}>
               <h2>Flatpaks to update</h2>
             </div>
             {
               paksToUpdateList.map((i) => (
-                <div style={{ display: "block", justifyContent: "stretch" }}>
+                <div style={{ display: "block", justifyContent: "normal" }}>
                   {i.name}
                 </div>
               ))
