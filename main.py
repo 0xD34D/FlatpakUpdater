@@ -72,6 +72,9 @@ class Plugin:
 
         return self.serializeFlatpaks(self)
 
+    async def updateFlatpak(self, appID: str) -> bool:
+        return self._updateFlatpak(appID=appID)
+
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):
         user = self._whoAmI()
@@ -116,6 +119,19 @@ class Plugin:
             logger.error(
                 f"execution of flatpak failed", exc_info=True)
             return []
+
+    @staticmethod
+    def _updateFlatpak(appID: str) -> bool:
+        logger.info(f'Updating {appID}...')
+        try:
+            result = subprocess.check_output(
+                ['flatpak', 'update', '--no-deploy', '--noninteractive', appID], encoding='utf-8')
+            logger.info(f'_updateFlatpak({appID}):\n{result}')
+            return True
+        except subprocess.CalledProcessError:
+            logger.error(
+                f"execution of flatpak failed", exc_info=True)
+            return False
 
     @staticmethod
     def _getFlatpakInfo(appID: str, name: str) -> Optional[FlatpakInfo]:

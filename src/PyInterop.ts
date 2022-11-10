@@ -18,4 +18,8 @@ export class PyInterop {
     static async getUpdatableFlatpaks(): Promise<ServerResponse<FlatpaksDictionary>> {
         return await this.serverAPI.callPluginMethod<{}, FlatpaksDictionary>("getUpdatableFlatpaks", {});
     }
+
+    static async updateFlatpak(appID: string): Promise<ServerResponse<boolean>> {
+        return await this.serverAPI.callPluginMethod<{ appID: string }, boolean>("updateFlatpak", { appID });
+    }
 }
