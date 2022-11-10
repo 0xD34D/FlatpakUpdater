@@ -125,6 +125,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
         <PanelSectionRow>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ButtonItem bottomSeparator="none" onClick={() => {
+              setUpdatableFlatpaks({});
               Router.CloseSideMenus();
               Router.Navigate("/apply-updates");
             }} disabled={Object.values(paksToUpdate).length == 0}>Update selected</ButtonItem>
@@ -132,6 +133,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ButtonItem bottomSeparator="none" onClick={() => {
               paksToUpdate = flatPaks;
+              setUpdatableFlatpaks({});
               Router.CloseSideMenus();
               Router.Navigate("/apply-updates");
             }}>Update all</ButtonItem>
