@@ -1,5 +1,5 @@
 {
-  "name": "steamdeck-flatpak-updater-plugin",
+  "name": "FlatpakUpdater",
   "version": "1.0.0",
   "description": "A decky plugin to update flatpaks from the steam client",
   "scripts": {
