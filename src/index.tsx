@@ -12,7 +12,7 @@ import {
 } from "decky-frontend-lib";
 import { PyInterop } from "./PyInterop";
 import { useEffect, useState, VFC } from "react";
-import { FaCloudDownloadAlt } from "react-icons/fa";
+import { FaBuffer } from "react-icons/fa";
 import { FlatpakInfo } from "./FlatpakInfo";
 
 type FlatpaksDictionary = {
@@ -207,7 +207,7 @@ export default definePlugin((serverApi: ServerAPI) => {
   return {
     title: <div className={staticClasses.Title}>Flatpak Updater</div>,
     content: <Content serverAPI={serverApi} />,
-    icon: <FaCloudDownloadAlt />,
+    icon: <FaBuffer />,
     onDismount() {
       serverApi.routerHook.removeRoute("/apply-updates");
     },
