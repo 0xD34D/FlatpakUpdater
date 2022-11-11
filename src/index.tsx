@@ -166,7 +166,7 @@ const ApplyUpdates: VFC = () => {
       {info &&
         <PanelSectionRow>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            Updating {info.name} <i>({info.appID})</i><Spinner />
+            Updating {info.name} <i>({info.appID})</i>
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ProgressBar nProgress={(count / totalToUpdate) * 100} />
