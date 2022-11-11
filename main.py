@@ -99,7 +99,7 @@ class Plugin:
         logger.info(f'Updating {appID}...')
         try:
             result = subprocess.check_output(
-                ['flatpak', 'update', '--no-deploy', '--noninteractive', appID], encoding='utf-8')
+                ['flatpak', 'update', '--noninteractive', appID], encoding='utf-8')
             logger.info(f'_updateFlatpak({appID}):\n{result}')
             return True
         except subprocess.CalledProcessError:
