@@ -9,6 +9,7 @@ import {
   ToggleField,
   ButtonItem,
   ProgressBar,
+  Spinner,
 } from "decky-frontend-lib";
 import { PyInterop } from "./PyInterop";
 import { useEffect, useState, VFC } from "react";
@@ -151,7 +152,7 @@ const ApplyUpdates: VFC = () => {
   const [totalToUpdate, _] = useState<number>(paksToUpdateList.length)
 
   if (info) {
-    PyInterop.updateFlatpak(info.appID)
+    PyInterop.updateFlatpak(info.appID, false)
       .then(data => {
         if (data.success) {
           delete paksToUpdate[info.appID]
@@ -165,7 +166,7 @@ const ApplyUpdates: VFC = () => {
       {info &&
         <PanelSectionRow>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            Updating {info.name} <i>({info.appID})</i>
+            Updating {info.name} <i>({info.appID})</i><Spinner />
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ProgressBar nProgress={(count / totalToUpdate) * 100} />

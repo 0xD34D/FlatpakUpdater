@@ -56,8 +56,8 @@ class Plugin:
 
         return self.serializeFlatpaks(self)
 
-    async def updateFlatpak(self, appID: str) -> bool:
-        return self._updateFlatpak(appID=appID)
+    async def updateFlatpak(self, appID: str, dry_run: bool = False) -> bool:
+        return self._updateFlatpak(appID=appID, dry_run=dry_run)
 
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):
@@ -95,11 +95,11 @@ class Plugin:
             return []
 
     @staticmethod
-    def _updateFlatpak(appID: str) -> bool:
-        logger.info(f'Updating {appID}...')
+    def _updateFlatpak(appID: str, dry_run: bool = False) -> bool:
+        logger.info(f'Updating {appID} dry_run={dry_run}...')
         try:
             result = subprocess.check_output(
-                ['flatpak', 'update', '--noninteractive', appID], encoding='utf-8')
+                ['flatpak', 'update', '--no-deploy' if dry_run else '', '--noninteractive', appID], encoding='utf-8')
             logger.info(f'_updateFlatpak({appID}):\n{result}')
             return True
         except subprocess.CalledProcessError:
