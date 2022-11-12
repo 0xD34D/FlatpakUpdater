@@ -9,7 +9,6 @@ import {
   ToggleField,
   ButtonItem,
   ProgressBar,
-  Spinner,
 } from "decky-frontend-lib";
 import { PyInterop } from "./PyInterop";
 import { useEffect, useState, VFC } from "react";
