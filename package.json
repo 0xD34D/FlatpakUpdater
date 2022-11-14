@@ -1,6 +1,6 @@
 {
   "name": "FlatpakUpdater",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A decky plugin to update flatpaks from the steam client",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
