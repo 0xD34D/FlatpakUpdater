@@ -4,11 +4,11 @@ import {
   PanelSectionRow,
   Router,
   ServerAPI,
-  SteamSpinner,
   staticClasses,
   ToggleField,
   ButtonItem,
   ProgressBar,
+  Spinner,
 } from "decky-frontend-lib";
 import { PyInterop } from "./PyInterop";
 import { useEffect, useState, VFC } from "react";
@@ -90,7 +90,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
           }
           {updaterState == UpdateCheckerState.CHECKING &&
             <div>
-              <SteamSpinner />
+              <Spinner width="96px"  height="96px"/>
             </div>
           }
         </div>
