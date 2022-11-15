@@ -87,7 +87,7 @@ class Plugin:
     async def _getInstalledFlatpaksWithUpdates() -> List[str]:
         try:
             result = subprocess.check_output(
-                ['flatpak', 'remote-ls', '--app', '--updates', '--columns=name,ref'], encoding='utf-8')
+                ['flatpak', 'remote-ls', '--updates', '--columns=name,ref'], encoding='utf-8')
             return result.splitlines()
         except subprocess.CalledProcessError:
             logger.error(
