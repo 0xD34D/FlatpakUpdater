@@ -11,63 +11,37 @@ import {
   Spinner,
 } from "decky-frontend-lib";
 import { PyInterop } from "./PyInterop";
-import { useEffect, useState, VFC } from "react";
+import { useState, VFC } from "react";
 import { FaBuffer } from "react-icons/fa";
 import { FlatpakInfo } from "./FlatpakInfo";
-
-type FlatpaksDictionary = {
-  [key: string]: FlatpakInfo
-}
 
 enum UpdateCheckerState {
   IDLE = 0,
   CHECKING,
 }
 
-var paksToUpdate: FlatpaksDictionary = {};
+var paksToUpdate: FlatpakInfo[] = [];
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
-  const [flatPaks, setUpdatableFlatpaks] = useState<FlatpaksDictionary>({});
+  const [flatPaks, setUpdatableFlatpaks] = useState<FlatpakInfo[]>([]);
   const [_, reloadGUI] = useState<any>("");
   const [updaterState, setUpdaterState] = useState<UpdateCheckerState>(UpdateCheckerState.IDLE);
-  if (Object.values(flatPaks).length == 0) {
-    paksToUpdate = {};
+  if (flatPaks.length == 0) {
+    paksToUpdate = [];
   }
-
-  if (updaterState == UpdateCheckerState.CHECKING) {
-    async () => {
-      PyInterop.getUpdatableFlatpaks()
-        .then(data => {
-          if (data.success) {
-            setUpdatableFlatpaks(data.result);
-          }
-        });
-    }
-  }
-
-  useEffect(() => {
-    if (updaterState == UpdateCheckerState.CHECKING) {
-      PyInterop.getUpdatableFlatpaks()
-        .then(data => {
-          if (data.success) {
-            setUpdatableFlatpaks(data.result);
-          }
-        });
-    }
-  }, [])
 
   return (
     <PanelSection title="Flatpaks">
       <PanelSectionRow>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <ButtonItem bottomSeparator="none" onClick={() => {
-            setUpdatableFlatpaks({});
+            setUpdatableFlatpaks([]);
             setUpdaterState(UpdateCheckerState.CHECKING);
             PyInterop.getUpdatableFlatpaks()
               .then(data => {
                 if (data.success) {
                   setUpdaterState(UpdateCheckerState.IDLE);
-                  setUpdatableFlatpaks(data.result);
+                  setUpdatableFlatpaks(Object.values(data.result));
                 }
               });
           }} disabled={updaterState != UpdateCheckerState.IDLE}>
@@ -83,14 +57,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
 
       <PanelSectionRow>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          {Object.values(flatPaks).length > 0 &&
+          {flatPaks.length > 0 &&
             <div>
-              <b>{Object.values(flatPaks).length}</b> updates available
+              <b>{flatPaks.length}</b> updates available
             </div>
           }
           {updaterState == UpdateCheckerState.CHECKING &&
             <div>
-              <Spinner width="96px"  height="96px"/>
+              <Spinner width="96px" height="96px" />
             </div>
           }
         </div>
@@ -99,19 +73,25 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
       <PanelSectionRow>
         <div>
           {
-            Object.values(flatPaks).map((info) => (
+            flatPaks.map((info) => (
               <div style={{ display: "block", justifyContent: "stretch" }}>
                 <ToggleField
                   checked={paksToUpdate[info.appID] !== undefined}
                   label={info.name}
                   onChange={(checked: boolean) => {
                     if (checked) {
-                      paksToUpdate[info.appID] = info;
+                      paksToUpdate.push(info);
                       console.info('added ' + info.appID)
                       reloadGUI("Added package to update " + info.name)
                     } else {
-                      delete paksToUpdate[info.appID];
-                      console.info('removed ' + info.appID)
+                      var N = paksToUpdate.length;
+                      for (var i: number = 0; i < N; i++) {
+                        if (info.appID == paksToUpdate[i].appID) {
+                          paksToUpdate.splice(i, 1);
+                          console.info('removed ' + info.appID)
+                          break;
+                        }
+                      }
                       reloadGUI("Removed package to update " + info.name)
                     }
                   }} />
@@ -121,19 +101,19 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
         </div>
       </PanelSectionRow>
 
-      {Object.values(flatPaks).length > 0 &&
+      {flatPaks.length > 0 &&
         <PanelSectionRow>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ButtonItem bottomSeparator="none" onClick={() => {
-              setUpdatableFlatpaks({});
+              setUpdatableFlatpaks([]);
               Router.CloseSideMenus();
               Router.Navigate("/apply-updates");
-            }} disabled={Object.values(paksToUpdate).length == 0}>Update selected</ButtonItem>
+            }} disabled={paksToUpdate.length == 0}>Update selected</ButtonItem>
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <ButtonItem bottomSeparator="none" onClick={() => {
               paksToUpdate = flatPaks;
-              setUpdatableFlatpaks({});
+              setUpdatableFlatpaks([]);
               Router.CloseSideMenus();
               Router.Navigate("/apply-updates");
             }}>Update all</ButtonItem>
@@ -145,16 +125,15 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
 };
 
 const ApplyUpdates: VFC = () => {
-  const paksToUpdateList: FlatpakInfo[] = Object.values(paksToUpdate)
-  const info: FlatpakInfo | undefined = paksToUpdateList.length > 0 ? paksToUpdateList[0] : undefined
+  const info: FlatpakInfo | undefined = paksToUpdate.length > 0 ? paksToUpdate[0] : undefined
   const [count, setCount] = useState<number>(0);
-  const [totalToUpdate, _] = useState<number>(paksToUpdateList.length)
+  const [totalToUpdate, _] = useState<number>(paksToUpdate.length)
 
   if (info) {
     PyInterop.updateFlatpak(info.appID, false)
       .then(data => {
         if (data.success) {
-          delete paksToUpdate[info.appID]
+          paksToUpdate.splice(0, 1);
           setCount(count + 1);
         }
       });
@@ -175,7 +154,7 @@ const ApplyUpdates: VFC = () => {
               <h2>Flatpaks to update</h2>
             </div>
             {
-              paksToUpdateList.map((i) => (
+              paksToUpdate.map((i) => (
                 <div style={{ display: "block", justifyContent: "normal" }}>
                   {i.name}
                 </div>
